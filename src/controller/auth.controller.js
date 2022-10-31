@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { PRIVATE_KEY } = require("../app/config");
+const userService = require("../service/user.service");
 
 class AuthController {
   // 设置token
@@ -25,6 +26,16 @@ class AuthController {
       status: 200,
       message: "验证成功",
       data: null,
+    };
+  }
+  // 获取登录用户信息
+  async getUserInfoById(ctx, next) {
+    const { userId } = ctx.request.params;
+    const result = await userService.getUserInfoById(userId);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
     };
   }
 }

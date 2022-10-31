@@ -1,12 +1,19 @@
 const Router = require("koa-router");
 
-const { create } = require("../controller/user.controller");
+const {
+  updateInfo,
+  getUserInfoById,
+  getUserList,
+} = require("../controller/user.controller");
 
-const { verifyUser, handlePassword } = require("../middleware/user.middleware");
+const { verifyAuth } = require("../middleware/auth.middleware");
 
-const userRouter = new Router({ prefix: "/user" });
+const userRouter = new Router({ prefix: "/main/user" });
 
-// 用户注册
-userRouter.post("/register", verifyUser, handlePassword, create);
-
+// 用户添加或修改个人信息
+userRouter.post("/:userId", verifyAuth, updateInfo);
+// 用户获取个人信息
+userRouter.get("/:userId", verifyAuth, getUserInfoById);
+// 管理员获取用户列表
+userRouter.get("/", verifyAuth, getUserList);
 module.exports = userRouter;
