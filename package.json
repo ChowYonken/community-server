@@ -1,0 +1,31 @@
+{
+  "name": "community-server",
+  "version": "1.0.0",
+  "description": "后台管理系统",
+  "main": "index.js",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "jsonwebtoken": "^8.5.1",
+    "koa": "^2.13.4",
+    "koa-bodyparser": "^4.3.0",
+    "koa-multer": "^1.0.2",
+    "koa-router": "^12.0.0",
+    "mysql2": "^2.3.3",
+    "nodemon": "^2.0.20"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./src/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChowYonken/community-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChowYonken/community-server/issues"
+  },
+  "homepage": "https://github.com/ChowYonken/community-server#readme"
+}
