@@ -1,6 +1,9 @@
+const jwt = require("jsonwebtoken");
+
 const errorTypes = require("../constants/error-types");
 const userService = require("../service/user.service");
 const md5password = require("../utils/password-handle");
+const { PUBLIC_KEY } = require("../app/config");
 
 // 验证登录
 const verifyLogin = async (ctx, next) => {
@@ -30,6 +33,30 @@ const verifyLogin = async (ctx, next) => {
   await next();
 };
 
+// 验证token
+const verifyAuth = async (ctx, next) => {
+  const authorization = ctx.headers.authorization;
+
+  if (!authorization) {
+    const error = new Error(errorTypes.UNAUTHORIZATION);
+    return ctx.app.emit("error", error, ctx);
+  }
+
+  const token = authorization.replace("Bearer ", "");
+
+  try {
+    const result = jwt.verify(token, PUBLIC_KEY, {
+      algorithms: ["RS256"],
+    });
+    ctx.user = result;
+    await next();
+  } catch (err) {
+    const error = new Error(errorTypes.UNAUTHORIZATION);
+    ctx.app.emit("error", error, ctx);
+  }
+};
+
 module.exports = {
   verifyLogin,
+  verifyAuth,
 };

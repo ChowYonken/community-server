@@ -19,8 +19,13 @@ class AuthController {
       token,
     };
   }
+  // 验证token成功
   async success(ctx, next) {
-    ctx.body = "授权成功~";
+    ctx.body = {
+      status: 200,
+      message: "验证成功",
+      data: null,
+    };
   }
 }
 
