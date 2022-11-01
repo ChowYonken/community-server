@@ -6,7 +6,10 @@ const {
   getUserList,
 } = require("../controller/user.controller");
 
-const { verifyAuth } = require("../middleware/auth.middleware");
+const {
+  verifyAuth,
+  verifyPermission,
+} = require("../middleware/auth.middleware");
 
 const userRouter = new Router({ prefix: "/main/user" });
 
@@ -15,5 +18,5 @@ userRouter.post("/:userId", verifyAuth, updateInfo);
 // 用户获取个人信息
 userRouter.get("/:userId", verifyAuth, getUserInfoById);
 // 管理员获取用户列表
-userRouter.get("/", verifyAuth, getUserList);
+userRouter.get("/", verifyAuth, verifyPermission, getUserList);
 module.exports = userRouter;

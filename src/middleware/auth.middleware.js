@@ -56,7 +56,19 @@ const verifyAuth = async (ctx, next) => {
   }
 };
 
+// 权限验证
+const verifyPermission = async (ctx, next) => {
+  const { id } = ctx.user;
+  const result = await userService.getUserInfoById(id);
+  if (result[0].role.id !== 1) {
+    const error = new Error(errorTypes.UNPERMISSION);
+    return ctx.app.emit("error", error, ctx);
+  }
+  await next();
+};
+
 module.exports = {
   verifyLogin,
   verifyAuth,
+  verifyPermission,
 };
