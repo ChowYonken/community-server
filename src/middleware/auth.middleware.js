@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const errorTypes = require("../constants/error-types");
 const userService = require("../service/user.service");
+const authService = require("../service/auth.service");
 const md5password = require("../utils/password-handle");
 const { PUBLIC_KEY } = require("../app/config");
 
@@ -67,8 +68,31 @@ const verifyPermission = async (ctx, next) => {
   await next();
 };
 
+// 判断用户是否修改自己的信息
+const verifyPermissionByUser = async (ctx, next) => {
+  // 1.获取参数
+  const [resourceKey] = Object.keys(ctx.params);
+  const tableName = resourceKey.replace("Id", "");
+  const resourceId = ctx.params[resourceKey];
+  const { account } = ctx.user;
+  // 2.查询是否具备权限
+  try {
+    const isPermission = await authService.checkResource(
+      tableName,
+      resourceId,
+      account
+    );
+    if (!isPermission) throw new Error();
+    await next();
+  } catch (err) {
+    const error = new Error(errorTypes.UNPERMISSION);
+    return ctx.app.emit("error", error, ctx);
+  }
+};
+
 module.exports = {
   verifyLogin,
   verifyAuth,
   verifyPermission,
+  verifyPermissionByUser,
 };

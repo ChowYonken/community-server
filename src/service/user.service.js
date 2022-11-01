@@ -51,6 +51,12 @@ class UserService {
     const [result] = await connections.execute(statement);
     return result;
   }
+  // 管理员删除用户
+  async deleteInfo(userId) {
+    const statement = `DELETE FROM user WHERE id = ?;`;
+    const [result] = await connections.execute(statement, [userId]);
+    return result;
+  }
 }
 
 module.exports = new UserService();
