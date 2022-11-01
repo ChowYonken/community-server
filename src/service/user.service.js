@@ -28,13 +28,26 @@ class UserService {
   }
   // 用户获取个人信息
   async getUserInfoById(userId) {
-    const statement = `SELECT account, realname, cellphone, address FROM user WHERE id = ?;`;
+    const statement = `SELECT 
+                       u.id, u.account, u.realname, u.cellphone, u.address, u.suspected,
+                       JSON_OBJECT("id", r.id, "name", r.name, "createTime", r.createAt, "updateTime", r.updateAt) role,
+                       u.createAt createTime, u.updateAt updateTime
+                       FROM user u
+                       LEFT JOIN user_role ur ON ur.user_id = u.id
+                       LEFT JOIN role r ON r.id = ur.role_id
+                       WHERE u.id = ?;`;
     const [result] = await connections.execute(statement, [userId]);
     return result;
   }
   // 管理员获取用户列表
   async getUserList() {
-    const statement = `SELECT account, realname, cellphone, address, suspected, createAt, updateAt FROM user;`;
+    const statement = `SELECT 
+                       u.id, u.account, u.realname, u.cellphone, u.address, u.suspected,
+                       JSON_OBJECT("id", r.id, "name", r.name, "createTime", r.createAt, "updateTime", r.updateAt) role,
+                       u.createAt createTime, u.updateAt updateTime
+                       FROM user u
+                       LEFT JOIN user_role ur ON ur.user_id = u.id
+                       LEFT JOIN role r ON r.id = ur.role_id`;
     const [result] = await connections.execute(statement);
     return result;
   }
