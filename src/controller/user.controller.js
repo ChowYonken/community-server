@@ -1,4 +1,5 @@
 const userService = require("../service/user.service");
+const errorTypes = require("../constants/error-types");
 
 class UserController {
   // 用户注册
@@ -11,10 +12,16 @@ class UserController {
       data: result,
     };
   }
-  // 用户或用户添加或修改个人信息
+  // 管理员或用户添加或修改个人信息
   async updateInfo(ctx, next) {
     const userInfo = ctx.request.body;
     const { userId } = ctx.request.params;
+    const { address } = ctx.request.body;
+    const isExist = await userService.checkAddress(address);
+    if (isExist) {
+      const error = new Error(errorTypes.ADDRESS_ALREADY_EXISTS);
+      return ctx.app.emit("error", error, ctx);
+    }
     const result = await userService.updateInfo(userInfo, userId);
     ctx.body = {
       status: 200,
@@ -22,7 +29,7 @@ class UserController {
       data: result,
     };
   }
-  // 用户获取个人信息
+  // 管理员或用户获取个人信息
   async getUserInfoById(ctx, next) {
     const { userId } = ctx.request.params;
     const result = await userService.getUserInfoById(userId);
@@ -35,6 +42,22 @@ class UserController {
   // 管理员获取用户列表
   async getUserList(ctx, next) {
     const result = await userService.getUserList();
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 管理员添加用户
+  async addUser(ctx, next) {
+    const info = ctx.request.body;
+    const { address } = ctx.request.body;
+    const isExist = await userService.checkAddress(address);
+    if (isExist) {
+      const error = new Error(errorTypes.ADDRESS_ALREADY_EXISTS);
+      return ctx.app.emit("error", error, ctx);
+    }
+    const result = await userService.addUser(info);
     ctx.body = {
       status: 200,
       message: "success",

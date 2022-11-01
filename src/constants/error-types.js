@@ -4,6 +4,7 @@ const USER_DOES_NOT_EXISTS = "user_does_not_exists";
 const PASSWORD_IS_INCORRENT = "password_is_incorrent";
 const UNAUTHORIZATION = "UNAUTHORIZATION";
 const UNPERMISSION = "unpermission";
+const ADDRESS_ALREADY_EXISTS = "address_already_exists";
 
 module.exports = {
   NAME_OR_PASSWORD_IS_REQUIRED,
@@ -12,4 +13,5 @@ module.exports = {
   PASSWORD_IS_INCORRENT,
   UNAUTHORIZATION,
   UNPERMISSION,
+  ADDRESS_ALREADY_EXISTS,
 };

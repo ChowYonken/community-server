@@ -27,6 +27,10 @@ const errorHandler = (error, ctx) => {
       status = 401;
       message = "您不具备操作的权限~";
       break;
+    case errorTypes.ADDRESS_ALREADY_EXISTS:
+      status = 400;
+      message = "地址已重复~";
+      break;
     default:
       status = 404;
       message = "NOT FOUND";
