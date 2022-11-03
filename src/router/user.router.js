@@ -6,6 +6,8 @@ const {
   getUserList,
   deleteInfo,
   addUser,
+  isSuspected,
+  suspectedList,
 } = require("../controller/user.controller");
 
 const {
@@ -31,14 +33,18 @@ userRouter.get(
   getUserInfoById
 );
 // 管理员获取用户列表
-userRouter.get("/", verifyAuth, verifyPermission, getUserList);
+userRouter.post("/", verifyAuth, verifyPermission, getUserList);
 // 管理员获取某个用户信息
 userRouter.get("/:userId", verifyAuth, verifyPermission, getUserInfoById);
 // 添加用户
 userRouter.post("/", verifyAuth, verifyPermission, addUser);
 // 管理员修改用户信息
-userRouter.post("/:userId", verifyAuth, verifyPermission, updateInfo);
+userRouter.patch("/:userId", verifyAuth, verifyPermission, updateInfo);
 // 管理员删除用户
 userRouter.delete("/:userId", verifyAuth, verifyPermission, deleteInfo);
+// 管理员设疑似人员
+userRouter.put("/:userId", verifyAuth, verifyPermission, isSuspected);
+// 管理员查询所有疑似人员
+userRouter.post("/suspected", verifyAuth, verifyPermission, suspectedList);
 
 module.exports = userRouter;

@@ -17,7 +17,7 @@ class UserController {
     const userInfo = ctx.request.body;
     const { userId } = ctx.request.params;
     const { address } = ctx.request.body;
-    const isExist = await userService.checkAddress(address);
+    const isExist = await userService.checkAddress(address, userId);
     if (isExist) {
       const error = new Error(errorTypes.ADDRESS_ALREADY_EXISTS);
       return ctx.app.emit("error", error, ctx);
@@ -41,7 +41,8 @@ class UserController {
   }
   // 管理员获取用户列表
   async getUserList(ctx, next) {
-    const result = await userService.getUserList();
+    const { offset, limit } = ctx.request.body;
+    const result = await userService.getUserList(offset, limit);
     ctx.body = {
       status: 200,
       message: "success",
@@ -68,6 +69,27 @@ class UserController {
   async deleteInfo(ctx, next) {
     const { userId } = ctx.request.params;
     const result = await userService.deleteInfo(userId);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 管理员设疑似人员
+  async isSuspected(ctx, next) {
+    const { userId } = ctx.request.params;
+    const { mode } = ctx.request.body;
+    const result = await userService.isSuspected(mode, userId);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 管理员查询疑似人员列表
+  async suspectedList(ctx, next) {
+    const { offset, limit } = ctx.request.body;
+    const result = await userService.suspectedList(offset, limit);
     ctx.body = {
       status: 200,
       message: "success",

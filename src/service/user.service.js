@@ -15,9 +15,9 @@ class UserService {
     return result;
   }
   // 判断地址是否存在
-  async checkAddress(address) {
-    const statement = `SELECT * FROM user WHERE address = ?;`;
-    const [result] = await connections.execute(statement, [address]);
+  async checkAddress(address, userId) {
+    const statement = `SELECT * FROM user WHERE address = ? AND id != ?;`;
+    const [result] = await connections.execute(statement, [address, userId]);
     return result.length === 0 ? false : true;
   }
   // 管理员或用户添加或修改个人信息
@@ -46,15 +46,16 @@ class UserService {
     return result;
   }
   // 管理员获取用户列表
-  async getUserList() {
+  async getUserList(offset, limit) {
     const statement = `SELECT 
                        u.id, u.account, u.realname, u.cellphone, u.address, u.suspected,
                        JSON_OBJECT("id", r.id, "name", r.name, "createTime", r.createAt, "updateTime", r.updateAt) role,
                        u.createAt createTime, u.updateAt updateTime
                        FROM user u
                        LEFT JOIN user_role ur ON ur.user_id = u.id
-                       LEFT JOIN role r ON r.id = ur.role_id`;
-    const [result] = await connections.execute(statement);
+                       LEFT JOIN role r ON r.id = ur.role_id
+                       LIMIT ?, ?;`;
+    const [result] = await connections.execute(statement, [offset, limit]);
     return result;
   }
   // 管理员添加用户
@@ -74,6 +75,22 @@ class UserService {
   async deleteInfo(userId) {
     const statement = `DELETE FROM user WHERE id = ?;`;
     const [result] = await connections.execute(statement, [userId]);
+    return result;
+  }
+  // 管理员设疑似人员
+  async isSuspected(mode, userId) {
+    const statement = `UPDATE user SET suspected = ? WHERE id = ?;`;
+    const [result] = await connections.execute(statement, [mode, userId]);
+    return result;
+  }
+  // 管理员查询疑似人员列表
+  async suspectedList(offset, limit) {
+    const statement = `
+      SELECT account, realname, cellphone, address, suspected 
+      FROM user 
+      WHERE suspected = 1
+      LIMIT ?, ?;`;
+    const [result] = await connections.execute(statement, [offset, limit]);
     return result;
   }
 }
