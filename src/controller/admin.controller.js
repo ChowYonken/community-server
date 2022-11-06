@@ -37,6 +37,16 @@ class AdminController {
       data: result,
     };
   }
+  // 根据id查询某条公告
+  async getNoticeById(ctx, next) {
+    const { noticeId } = ctx.request.params;
+    const result = await adminService.getNoticeById(noticeId);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
 }
 
 module.exports = new AdminController();

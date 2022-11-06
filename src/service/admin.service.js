@@ -34,6 +34,14 @@ class AdminService {
     const [result] = await connections.execute(statement, [noticeId]);
     return result;
   }
+  // 根据id查询某条公告
+  async getNoticeById(noticeId) {
+    const statement = `
+      SELECT * FROM notice WHERE id = ?;
+    `;
+    const [result] = await connections.execute(statement, [noticeId]);
+    return result;
+  }
 }
 
 module.exports = new AdminService();

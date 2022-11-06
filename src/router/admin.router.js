@@ -4,6 +4,7 @@ const {
   addNotice,
   updateNotice,
   deleteNotice,
+  getNoticeById,
 } = require("../controller/admin.controller");
 
 const {
@@ -28,6 +29,13 @@ adminRouter.delete(
   verifyAuth,
   verifyPermission,
   deleteNotice
+);
+// 根据id查询某条公告
+adminRouter.get(
+  "/manage/notice/:noticeId",
+  verifyAuth,
+  verifyPermission,
+  getNoticeById
 );
 
 module.exports = adminRouter;
