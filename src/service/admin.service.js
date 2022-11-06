@@ -42,6 +42,109 @@ class AdminService {
     const [result] = await connections.execute(statement, [noticeId]);
     return result;
   }
+  // 查询所有外出人员
+  async getOutList(offset, limit) {
+    const statement = `
+      SELECT
+      o.id,
+      JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+      o.start, o.end, o.startTime, o.endTime, o.transportation, o.createAt, o.updateAt
+      FROM outward o
+      LEFT JOIN user u ON u.id = o.user_id
+      LIMIT ?, ?;
+    `;
+    const [result] = await connections.execute(statement, [offset, limit]);
+    return result;
+  }
+  // 根据住户真实姓名查询外出报备
+  async getOutByRealname(realname) {
+    const statement = `
+      SELECT
+      o.id,
+      JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+      o.start, o.end, o.startTime, o.endTime, o.transportation, o.createAt, o.updateAt
+      FROM outward o
+      LEFT JOIN user u ON u.id = o.user_id
+      WHERE u.realname = ?
+    `;
+    const [result] = await connections.execute(statement, [realname]);
+    return result;
+  }
+  // 根据指定结束地点的外出报备
+  async getOutByEnd(end, offset, limit) {
+    const statement = `
+      SELECT
+      o.id,
+      JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+      o.start, o.end, o.startTime, o.endTime, o.transportation, o.createAt, o.updateAt
+      FROM outward o
+      LEFT JOIN user u ON u.id = o.user_id
+      WHERE o.end = ?
+      LIMIT ?, ?;
+    `;
+    const [result] = await connections.execute(statement, [end, offset, limit]);
+    return result;
+  }
+  // 根据时间段查询外出报备
+  async getOutByTime(startTime, endTime, offset, limit) {
+    const statement = `
+      SELECT
+      o.id,
+      JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+      o.start, o.end, o.startTime, o.endTime, o.transportation, o.createAt, o.updateAt
+      FROM outward o
+      LEFT JOIN user u ON u.id = o.user_id
+      WHERE o.endTime >= ? AND o.endTime <= ?
+      LIMIT ?, ?;
+    `;
+    const [result] = await connections.execute(statement, [
+      startTime,
+      endTime,
+      offset,
+      limit,
+    ]);
+    return result;
+  }
+  // 修改某条外出报备
+  async updateOutById(
+    start,
+    end,
+    startTime,
+    endTime,
+    transportation,
+    user_id,
+    outId
+  ) {
+    const statement = `
+      UPDATE outward SET start = ?, end = ?, startTime = ?, endTime = ?, transportation = ?, user_id = ? WHERE id = ?;
+    `;
+    const [result] = await connections.execute(statement, [
+      start,
+      end,
+      startTime,
+      endTime,
+      transportation,
+      user_id,
+      outId,
+    ]);
+    return result;
+  }
+  // 查询指定id的外出报备
+  async getOutById(outId) {
+    const statement = `
+      SELECT * FROM outward WHERE id = ?;
+    `;
+    const [result] = await connections.execute(statement, [outId]);
+    return result;
+  }
+  // 删除指定id的外出设备
+  async deleteById(outId) {
+    const statement = `
+      DELETE FROM outward WHERE id = ?;
+    `;
+    const [result] = await connections.execute(statement, [outId]);
+    return result;
+  }
 }
 
 module.exports = new AdminService();
