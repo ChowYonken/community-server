@@ -133,6 +133,24 @@ class UserController {
       data: result,
     };
   }
+  // 用户外出报备
+  async addOut(ctx, next) {
+    const { start, end, startTime, endTime, transportation } = ctx.request.body;
+    const { id } = ctx.user;
+    const result = await userService.addOut(
+      start,
+      end,
+      startTime,
+      endTime,
+      transportation,
+      id
+    );
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
 }
 
 module.exports = new UserController();

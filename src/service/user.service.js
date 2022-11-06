@@ -118,7 +118,6 @@ class UserService {
   }
   // 用户查询普通或紧急公告
   async getNoticeByPriority(offset, limit, priority, timeStart, timeEnd) {
-    console.log(offset, limit, priority, timeStart, timeEnd);
     const statement = `
       SELECT
       *
@@ -132,6 +131,21 @@ class UserService {
       timeEnd,
       offset,
       limit,
+    ]);
+    return result;
+  }
+  // 用户外出报备
+  async addOut(start, end, startTime, endTime, transportation, id) {
+    const statement = `
+      INSERT INTO outward (start, end, startTime, endTime, transportation, user_id) VALUES (?, ?, ?, ?, ?, ?);
+    `;
+    const [result] = await connections.execute(statement, [
+      start,
+      end,
+      startTime,
+      endTime,
+      transportation,
+      id,
     ]);
     return result;
   }

@@ -10,6 +10,7 @@ const {
   suspectedList,
   queryByRealnameOrAddress,
   getNoticeByPriority,
+  addOut,
 } = require("../controller/user.controller");
 
 const {
@@ -36,6 +37,8 @@ userRouter.get(
 );
 // 用户查询普通或紧急公告
 userRouter.post("/notice", verifyAuth, getNoticeByPriority);
+// 用户外出报备
+userRouter.post("/out", verifyAuth, addOut);
 
 // 管理员获取用户列表
 userRouter.post("/list", verifyAuth, verifyPermission, getUserList);
