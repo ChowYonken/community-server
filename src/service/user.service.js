@@ -14,10 +14,16 @@ class UserService {
     const [result] = await connections.execute(statement, [account]);
     return result;
   }
-  // 判断地址是否存在
-  async checkAddress(address, userId) {
+  // 判断地址是否存在(除了用户自己，需要使用userId)
+  async checkAddressById(address, userId) {
     const statement = `SELECT * FROM user WHERE address = ? AND id != ?;`;
     const [result] = await connections.execute(statement, [address, userId]);
+    return result.length === 0 ? false : true;
+  }
+  // 判断地址是否存在（判断所有用户，不需要使用userId）
+  async checkAddress(address) {
+    const statement = `SELECT * FROM user WHERE address = ?;`;
+    const [result] = await connections.execute(statement, [address]);
     return result.length === 0 ? false : true;
   }
   // 管理员或用户添加或修改个人信息
@@ -56,6 +62,23 @@ class UserService {
                        LEFT JOIN role r ON r.id = ur.role_id
                        LIMIT ?, ?;`;
     const [result] = await connections.execute(statement, [offset, limit]);
+    return result;
+  }
+  // 管理员根据真实姓名或地址查询用户
+  async queryByRealnameOrAddress(realname, address, offset, limit) {
+    const statement = `
+      SELECT
+      *
+      FROM user
+      WHERE realname LIKE ? AND address LIKE ?
+      LIMIT ?, ?;
+    `;
+    const [result] = await connections.execute(statement, [
+      `%${realname}%`,
+      `%${address}%`,
+      offset,
+      limit,
+    ]);
     return result;
   }
   // 管理员添加用户

@@ -8,6 +8,7 @@ const {
   addUser,
   isSuspected,
   suspectedList,
+  queryByRealnameOrAddress,
 } = require("../controller/user.controller");
 
 const {
@@ -32,11 +33,19 @@ userRouter.get(
   verifyPermissionByUser,
   getUserInfoById
 );
+
 // 管理员获取用户列表
-userRouter.post("/", verifyAuth, verifyPermission, getUserList);
+userRouter.post("/list", verifyAuth, verifyPermission, getUserList);
 // 管理员获取某个用户信息
 userRouter.get("/:userId", verifyAuth, verifyPermission, getUserInfoById);
-// 添加用户
+// 管理员根据真实名字或地址查询用户
+userRouter.post(
+  "/others",
+  verifyAuth,
+  verifyPermission,
+  queryByRealnameOrAddress
+);
+// 管理员添加用户
 userRouter.post("/", verifyAuth, verifyPermission, addUser);
 // 管理员修改用户信息
 userRouter.patch("/:userId", verifyAuth, verifyPermission, updateInfo);

@@ -19,6 +19,16 @@ class CommonService {
     const [result] = await connections.execute(statement, [roleId]);
     return result;
   }
+  async getNoticeList(offset, limit) {
+    const statement = `
+      SELECT
+      *
+      FROM notice
+      LIMIT 0, 10;
+    `;
+    const [result] = await connections.execute(statement, [offset, limit]);
+    return result;
+  }
 }
 
 module.exports = new CommonService();

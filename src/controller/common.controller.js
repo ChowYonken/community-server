@@ -20,6 +20,16 @@ class commonController {
       data: result,
     };
   }
+  // 查询公告列表
+  async getNoticeList(ctx, next) {
+    const { offset, limit } = ctx.request.body;
+    const result = await commonService.getNoticeList(offset, limit);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
 }
 
 module.exports = new commonController();
