@@ -9,6 +9,7 @@ const {
   isSuspected,
   suspectedList,
   queryByRealnameOrAddress,
+  getNoticeByPriority,
 } = require("../controller/user.controller");
 
 const {
@@ -33,6 +34,8 @@ userRouter.get(
   verifyPermissionByUser,
   getUserInfoById
 );
+// 用户查询普通或紧急公告
+userRouter.post("/notice", verifyAuth, getNoticeByPriority);
 
 // 管理员获取用户列表
 userRouter.post("/list", verifyAuth, verifyPermission, getUserList);

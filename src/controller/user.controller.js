@@ -117,6 +117,22 @@ class UserController {
       data: result,
     };
   }
+  // 用户查询普通或紧急公告
+  async getNoticeByPriority(ctx, next) {
+    const { offset, limit, priority, timeStart, timeEnd } = ctx.request.body;
+    const result = await userService.getNoticeByPriority(
+      offset,
+      limit,
+      priority,
+      timeStart,
+      timeEnd
+    );
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
 }
 
 module.exports = new UserController();

@@ -116,6 +116,25 @@ class UserService {
     const [result] = await connections.execute(statement, [offset, limit]);
     return result;
   }
+  // 用户查询普通或紧急公告
+  async getNoticeByPriority(offset, limit, priority, timeStart, timeEnd) {
+    console.log(offset, limit, priority, timeStart, timeEnd);
+    const statement = `
+      SELECT
+      *
+      FROM notice
+      WHERE priority = ? OR (createAt >= ? AND createAt <= ?)
+      LIMIT ?, ?;
+    `;
+    const [result] = await connections.execute(statement, [
+      priority,
+      timeStart,
+      timeEnd,
+      offset,
+      limit,
+    ]);
+    return result;
+  }
 }
 
 module.exports = new UserService();
