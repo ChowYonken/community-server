@@ -6,6 +6,10 @@ class UserService {
     const { account, password } = user;
     const statement = `INSERT INTO user (account, password) VALUES (?, ?);`;
     const [result] = await connections.execute(statement, [account, password]);
+    // 默认分配为住户
+    const { insertId } = result;
+    const statement1 = `INSERT INTO user_role (user_id, role_id) VALUES (?, ?);`;
+    await connections.execute(statement1, [insertId, 2]);
     return result;
   }
   // 根据用户账号判断用户是否已注册
