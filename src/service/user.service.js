@@ -149,6 +149,21 @@ class UserService {
     ]);
     return result;
   }
+  // 用户健康申报
+  async addHealth(homeTemp, status, riskAreas, healthCode, others, id) {
+    const statement = `
+      INSERT INTO health (homeTemp, status, riskAreas, healthCode, others, user_id) VALUES (?, ?, ?, ?, ?, ?);
+    `;
+    const [result] = await connections.execute(statement, [
+      homeTemp,
+      status,
+      riskAreas,
+      healthCode,
+      others,
+      id,
+    ]);
+    return result;
+  }
 }
 
 module.exports = new UserService();

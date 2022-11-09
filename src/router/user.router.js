@@ -11,6 +11,7 @@ const {
   queryByRealnameOrAddress,
   getNoticeByPriority,
   addOut,
+  addHealth,
 } = require("../controller/user.controller");
 
 const {
@@ -39,6 +40,8 @@ userRouter.get(
 userRouter.post("/notice", verifyAuth, getNoticeByPriority);
 // 用户外出报备
 userRouter.post("/out", verifyAuth, addOut);
+// 用户健康申报
+userRouter.post("/health", verifyAuth, addHealth);
 
 // 管理员获取用户列表
 userRouter.post("/list", verifyAuth, verifyPermission, getUserList);

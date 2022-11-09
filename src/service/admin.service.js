@@ -47,7 +47,7 @@ class AdminService {
     const statement = `
       SELECT
       o.id,
-      JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+      JSON_OBJECT('id', u.id, 'realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
       o.start, o.end, o.startTime, o.endTime, o.transportation, o.createAt, o.updateAt
       FROM outward o
       LEFT JOIN user u ON u.id = o.user_id
@@ -61,7 +61,7 @@ class AdminService {
     const statement = `
       SELECT
       o.id,
-      JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+      JSON_OBJECT('id', u.id, 'realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
       o.start, o.end, o.startTime, o.endTime, o.transportation, o.createAt, o.updateAt
       FROM outward o
       LEFT JOIN user u ON u.id = o.user_id
@@ -75,7 +75,7 @@ class AdminService {
     const statement = `
       SELECT
       o.id,
-      JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+      JSON_OBJECT('id', u.id, 'realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
       o.start, o.end, o.startTime, o.endTime, o.transportation, o.createAt, o.updateAt
       FROM outward o
       LEFT JOIN user u ON u.id = o.user_id
@@ -90,7 +90,7 @@ class AdminService {
     const statement = `
       SELECT
       o.id,
-      JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+      JSON_OBJECT('id', u.id, 'realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
       o.start, o.end, o.startTime, o.endTime, o.transportation, o.createAt, o.updateAt
       FROM outward o
       LEFT JOIN user u ON u.id = o.user_id
@@ -143,6 +143,122 @@ class AdminService {
       DELETE FROM outward WHERE id = ?;
     `;
     const [result] = await connections.execute(statement, [outId]);
+    return result;
+  }
+  // 查询所有住户的健康信息
+  async getHealthList(offset, limit) {
+    const statement = `
+      SELECT 
+      h.id, h.homeTemp, h.status, h.riskAreas, h.healthCode, h.others, 
+      JSON_OBJECT('id', u.id, 'realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+      h.createAt createTime
+      FROM health h
+      LEFT JOIN user u ON u.id = h.user_id
+      LIMIT ?, ?;
+    `;
+    const [result] = await connections.execute(statement, [offset, limit]);
+    return result;
+  }
+  // 查询指定id住户的健康信息
+  async getHealthById(userId) {
+    const statement = `
+      SELECT 
+      h.id, h.homeTemp, h.status, h.riskAreas, h.healthCode, h.others, 
+      JSON_OBJECT('id', u.id, 'realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+      h.createAt createTime
+      FROM health h
+      LEFT JOIN user u ON u.id = h.user_id
+      WHERE h.user_id = ?;
+    `;
+    const [result] = await connections.execute(statement, [userId]);
+    return result;
+  }
+  // 查询指定高于某温度的住户健康信息
+  async getHealthByHomeTemp(offset, limit, homeTemp) {
+    const statement = `
+      SELECT 
+      h.id, h.homeTemp, h.status, h.riskAreas, h.healthCode, h.others, 
+      JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+      h.createAt createTime
+      FROM health h
+      LEFT JOIN user u ON u.id = h.user_id
+      WHERE h.homeTemp >= ?
+      LIMIT ?, ?;
+    `;
+    const [result] = await connections.execute(statement, [
+      homeTemp,
+      offset,
+      limit,
+    ]);
+    return result;
+  }
+  // 查询根据健康码颜色的住户健康信息
+  async getHealthByHealthCode(offset, limit, healthCode) {
+    const statement = `
+      SELECT 
+      h.id, h.homeTemp, h.status, h.riskAreas, h.healthCode, h.others, 
+      JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+      h.createAt createTime
+      FROM health h
+      LEFT JOIN user u ON u.id = h.user_id
+      WHERE h.healthCode = ?
+      LIMIT ?, ?;
+    `;
+    const [result] = await connections.execute(statement, [
+      healthCode,
+      offset,
+      limit,
+    ]);
+    return result;
+  }
+  // 查询指定时间段的健康信息
+  async getHealthByTime(offset, limit, startTime, endTime) {
+    const statement = `
+      SELECT 
+      h.id, h.homeTemp, h.status, h.riskAreas, h.healthCode, h.others, 
+      JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+      h.createAt createTime
+      FROM health h
+      LEFT JOIN user u ON u.id = h.user_id
+      WHERE h.createAt >= ? AND h.createAt <= ?
+      LIMIT ?, ?;
+    `;
+    const [result] = await connections.execute(statement, [
+      startTime,
+      endTime,
+      offset,
+      limit,
+    ]);
+    return result;
+  }
+  // 修改某条健康信息
+  async updateHealth(
+    homeTemp,
+    status,
+    riskAreas,
+    healthCode,
+    others,
+    healthId
+  ) {
+    const statement = `
+      UPDATE health SET homeTemp=?, status=?, riskAreas=?, healthCode=?, others=? WHERE id = ?;
+    `;
+    const [result] = await connections.execute(statement, [
+      homeTemp,
+      status,
+      riskAreas,
+      healthCode,
+      others,
+      healthId,
+    ]);
+    return result;
+  }
+  // 删除某条健康信息
+  async deleteHealth(healthId) {
+    const statement = `
+      DELETE FROM health WHERE id=?;
+    `;
+    const [result] = await connections.execute(statement, [healthId]);
     return result;
   }
 }

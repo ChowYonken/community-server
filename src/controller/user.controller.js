@@ -151,6 +151,25 @@ class UserController {
       data: result,
     };
   }
+  // 用户健康申报
+  async addHealth(ctx, next) {
+    const { homeTemp, status, riskAreas, healthCode, others } =
+      ctx.request.body;
+    const { id } = ctx.user;
+    const result = await userService.addHealth(
+      homeTemp,
+      status,
+      riskAreas,
+      healthCode,
+      others,
+      id
+    );
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
 }
 
 module.exports = new UserController();

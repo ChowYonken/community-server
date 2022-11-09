@@ -12,6 +12,13 @@ const {
   updateOutById,
   getOutById,
   deleteById,
+  getHealthList,
+  getHealthById,
+  getHealthByHomeTemp,
+  getHealthByHealthCode,
+  getHealthByTime,
+  updateHealth,
+  deleteHealth,
 } = require("../controller/admin.controller");
 
 const {
@@ -77,6 +84,55 @@ adminRouter.delete(
   verifyAuth,
   verifyPermission,
   deleteById
+);
+// 查询所有住户的健康信息
+adminRouter.post(
+  "/manage/health/list",
+  verifyAuth,
+  verifyPermission,
+  getHealthList
+);
+// 查询指定id住户的健康信息
+adminRouter.get(
+  "/manage/health/:userId",
+  verifyAuth,
+  verifyPermission,
+  getHealthById
+);
+// 查询指定高于某温度的住户健康信息
+adminRouter.post(
+  "/manage/health/homeTemp",
+  verifyAuth,
+  verifyPermission,
+  getHealthByHomeTemp
+);
+// 查询根据健康码颜色的住户健康信息
+adminRouter.post(
+  "/manage/health/healthCode",
+  verifyAuth,
+  verifyPermission,
+  getHealthByHealthCode
+);
+// 查询指定时间段的健康信息
+adminRouter.post(
+  "/manage/health/time",
+  verifyAuth,
+  verifyPermission,
+  getHealthByTime
+);
+// 修改某条健康信息
+adminRouter.patch(
+  "/manage/health/:healthId",
+  verifyAuth,
+  verifyPermission,
+  updateHealth
+);
+// 删除某条健康信息
+adminRouter.delete(
+  "/manage/health/:healthId",
+  verifyAuth,
+  verifyPermission,
+  deleteHealth
 );
 
 module.exports = adminRouter;

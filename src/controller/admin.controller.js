@@ -134,6 +134,98 @@ class AdminController {
       data: result,
     };
   }
+  // 查询所有住户的健康信息
+  async getHealthList(ctx, next) {
+    const { offset, limit } = ctx.request.body;
+    const result = await adminService.getHealthList(offset, limit);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 查询指定id住户的健康信息
+  async getHealthById(ctx, next) {
+    const { userId } = ctx.request.params;
+    const result = await adminService.getHealthById(userId);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 查询指定高于某温度的住户健康信息
+  async getHealthByHomeTemp(ctx, next) {
+    const { offset, limit, homeTemp } = ctx.request.body;
+    const result = await adminService.getHealthByHomeTemp(
+      offset,
+      limit,
+      homeTemp
+    );
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 查询根据健康码颜色的住户健康信息
+  async getHealthByHealthCode(ctx, next) {
+    const { offset, limit, healthCode } = ctx.request.body;
+    const result = await adminService.getHealthByHealthCode(
+      offset,
+      limit,
+      healthCode
+    );
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 查询指定时间段的健康信息
+  async getHealthByTime(ctx, next) {
+    const { offset, limit, startTime, endTime } = ctx.request.body;
+    const result = await adminService.getHealthByTime(
+      offset,
+      limit,
+      startTime,
+      endTime
+    );
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 修改某条健康信息
+  async updateHealth(ctx, next) {
+    const { homeTemp, status, riskAreas, healthCode, others } =
+      ctx.request.body;
+    const { healthId } = ctx.request.params;
+    const result = await adminService.updateHealth(
+      homeTemp,
+      status,
+      riskAreas,
+      healthCode,
+      others,
+      healthId
+    );
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 删除某条健康信息
+  async deleteHealth(ctx, next) {
+    const { healthId } = ctx.request.params;
+    const result = await adminService.deleteHealth(healthId);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
 }
 
 module.exports = new AdminController();
