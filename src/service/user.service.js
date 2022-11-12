@@ -53,7 +53,7 @@ class UserService {
                        LEFT JOIN role r ON r.id = ur.role_id
                        WHERE u.id = ?;`;
     const [result] = await connections.execute(statement, [userId]);
-    return result;
+    return result[0];
   }
   // 管理员获取用户列表
   async getUserList(offset, limit) {
