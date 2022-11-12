@@ -30,8 +30,8 @@ class AuthController {
   }
   // 获取登录用户信息
   async getUserInfoById(ctx, next) {
-    const { userId } = ctx.request.params;
-    const result = await userService.getUserInfoById(userId);
+    const { id } = ctx.user;
+    const result = await userService.getUserInfoById(id);
     ctx.body = {
       status: 200,
       message: "success",

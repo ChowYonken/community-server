@@ -19,6 +19,6 @@ authRouter.post("/login", verifyLogin, login);
 // 验证token
 authRouter.get("/test", verifyAuth, success);
 // 获取登录用户信息
-authRouter.get("/login/user/:userId", verifyAuth, getUserInfoById);
+authRouter.get("/login/user", verifyAuth, getUserInfoById);
 
 module.exports = authRouter;
