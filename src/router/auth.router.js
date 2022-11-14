@@ -4,6 +4,7 @@ const {
   login,
   success,
   getUserInfoById,
+  logout,
 } = require("../controller/auth.controller");
 const { create } = require("../controller/user.controller");
 
@@ -20,5 +21,7 @@ authRouter.post("/login", verifyLogin, login);
 authRouter.get("/test", verifyAuth, success);
 // 获取登录用户信息
 authRouter.get("/login/user", verifyAuth, getUserInfoById);
+// 用户退出登录
+authRouter.get("/logout", verifyAuth, logout);
 
 module.exports = authRouter;

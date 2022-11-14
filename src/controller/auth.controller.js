@@ -38,6 +38,14 @@ class AuthController {
       data: result,
     };
   }
+  // 用户退出登录
+  async logout(ctx, next) {
+    ctx.body = {
+      status: 100,
+      message: "success",
+      data: null,
+    };
+  }
 }
 
 module.exports = new AuthController();
