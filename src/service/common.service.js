@@ -29,6 +29,17 @@ class CommonService {
     const [result] = await connections.execute(statement, [offset, limit]);
     return result;
   }
+  // 查询红绿黄码数量
+  async gethealthCodeCounts() {
+    const statement = `
+      SELECT 
+      healthCode, COUNT(*) counts 
+      FROM health 
+      GROUP BY healthCode;
+    `;
+    const [result] = await connections.execute(statement);
+    return result;
+  }
 }
 
 module.exports = new CommonService();
