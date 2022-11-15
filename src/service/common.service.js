@@ -38,7 +38,7 @@ class CommonService {
       WHERE createAt=(SELECT max(createAt) FROM notice);
     `;
     const [result] = await connections.execute(statement);
-    return result;
+    return result[0];
   }
   // 查询红绿黄码数量
   async gethealthCodeCounts() {
