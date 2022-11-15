@@ -5,6 +5,7 @@ const {
   getMenuByRole,
   getNoticeList,
   gethealthCodeCounts,
+  getNewNotice,
 } = require("../controller/common.controller");
 
 const { verifyAuth } = require("../middleware/auth.middleware");
@@ -17,6 +18,8 @@ commonRouter.get("/menu/list", verifyAuth, getMenuList);
 commonRouter.get("/role/:roleId/menu", verifyAuth, getMenuByRole);
 // 查询公告列表
 commonRouter.post("/main/notice/list", verifyAuth, getNoticeList);
+// 查询最新公告
+commonRouter.get("/main/notice/new", verifyAuth, getNewNotice);
 // 查询红绿黄码数量
 commonRouter.get("/main/healthCode/counts", verifyAuth, gethealthCodeCounts);
 

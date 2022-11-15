@@ -30,6 +30,15 @@ class commonController {
       data: result,
     };
   }
+  // 查询最新公告
+  async getNewNotice(ctx, next) {
+    const result = await commonService.getNewNotice();
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
   // 查询红绿黄码数量
   async gethealthCodeCounts(ctx, next) {
     const result = await commonService.gethealthCodeCounts();

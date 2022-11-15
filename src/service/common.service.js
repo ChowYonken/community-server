@@ -29,6 +29,17 @@ class CommonService {
     const [result] = await connections.execute(statement, [offset, limit]);
     return result;
   }
+  // 查询最新公告
+  async getNewNotice() {
+    const statement = `
+      SELECT
+      *
+      FROM notice
+      WHERE createAt=(SELECT max(createAt) FROM notice);
+    `;
+    const [result] = await connections.execute(statement);
+    return result;
+  }
   // 查询红绿黄码数量
   async gethealthCodeCounts() {
     const statement = `
