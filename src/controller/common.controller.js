@@ -48,6 +48,16 @@ class commonController {
       data: result,
     };
   }
+  // 获取公告总数
+  async getNoticeTotal(ctx, next) {
+    const result = await commonService.getNoticeTotal();
+    console.log(result);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
 }
 
 module.exports = new commonController();

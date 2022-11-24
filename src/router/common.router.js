@@ -6,6 +6,7 @@ const {
   getNoticeList,
   gethealthCodeCounts,
   getNewNotice,
+  getNoticeTotal,
 } = require("../controller/common.controller");
 
 const { verifyAuth } = require("../middleware/auth.middleware");
@@ -22,5 +23,7 @@ commonRouter.post("/main/notice/list", verifyAuth, getNoticeList);
 commonRouter.get("/main/notice/new", verifyAuth, getNewNotice);
 // 查询红绿黄码数量
 commonRouter.get("/main/healthCode/counts", verifyAuth, gethealthCodeCounts);
+// 获取公告总数
+commonRouter.get("/main/notice/total", verifyAuth, getNoticeTotal);
 
 module.exports = commonRouter;

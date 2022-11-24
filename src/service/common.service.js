@@ -51,6 +51,16 @@ class CommonService {
     const [result] = await connections.execute(statement);
     return result;
   }
+  // 获取公告总数
+  async getNoticeTotal() {
+    const statement = `
+      SELECT
+      COUNT(*) as total
+      FROM notice;
+    `;
+    const [result] = await connections.execute(statement);
+    return result[0];
+  }
 }
 
 module.exports = new CommonService();
