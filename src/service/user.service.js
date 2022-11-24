@@ -122,20 +122,52 @@ class UserService {
   }
   // 用户查询普通或紧急公告
   async getNoticeByPriority(offset, limit, priority, timeStart, timeEnd) {
-    const statement = `
-      SELECT
-      *
-      FROM notice
-      WHERE priority = ? OR (createAt >= ? AND createAt <= ?)
-      LIMIT ?, ?;
-    `;
-    const [result] = await connections.execute(statement, [
-      priority,
-      timeStart,
-      timeEnd,
-      offset,
-      limit,
-    ]);
+    let statement = ``;
+    let result = [];
+    if (priority && timeStart) {
+      statement = `
+        SELECT
+        *
+        FROM notice
+        WHERE  (createAt >= ? AND createAt <= ?) AND priority = ?
+        LIMIT ?, ?;
+      `;
+      [result] = await connections.execute(statement, [
+        timeStart,
+        timeEnd,
+        priority,
+        offset,
+        limit,
+      ]);
+    } else if (priority && timeStart === "") {
+      statement = `
+        SELECT
+        *
+        FROM notice
+        WHERE priority = ?
+        LIMIT ?, ?;
+      `;
+      [result] = await connections.execute(statement, [
+        priority,
+        offset,
+        limit,
+      ]);
+    } else if (priority === "" && timeStart) {
+      statement = `
+        SELECT
+        *
+        FROM notice
+        WHERE createAt >= ? AND createAt <= ?
+        LIMIT ?, ?;
+      `;
+      [result] = await connections.execute(statement, [
+        timeStart,
+        timeEnd,
+        offset,
+        limit,
+      ]);
+    }
+
     return result;
   }
   // 用户外出报备
