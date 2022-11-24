@@ -24,7 +24,7 @@ class CommonService {
       SELECT
       *
       FROM notice
-      LIMIT 0, 10;
+      LIMIT ?, ?;
     `;
     const [result] = await connections.execute(statement, [offset, limit]);
     return result;
