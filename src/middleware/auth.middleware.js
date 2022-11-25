@@ -90,9 +90,25 @@ const verifyPermissionByUser = async (ctx, next) => {
   }
 };
 
+// 判断旧密码是否正确
+const verifyOldPwd = async (ctx, next) => {
+  const { oldPwd, newPwd } = ctx.request.body;
+  const { id } = ctx.user;
+  // 新密码加密
+  ctx.request.body.newPwd = md5password(newPwd);
+  const { password } = await userService.getPwdById(id);
+  // 判断密码是否正确
+  if (md5password(oldPwd) !== password) {
+    const error = new Error(errorTypes.PASSWORD_IS_INCORRENT);
+    return ctx.app.emit("error", error, ctx);
+  }
+  await next();
+};
+
 module.exports = {
   verifyLogin,
   verifyAuth,
   verifyPermission,
   verifyPermissionByUser,
+  verifyOldPwd,
 };

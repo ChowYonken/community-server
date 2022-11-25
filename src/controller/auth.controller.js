@@ -46,6 +46,17 @@ class AuthController {
       data: null,
     };
   }
+  // 修改密码
+  async updatePassword(ctx, next) {
+    const newPwd = ctx.request.body.newPwd;
+    const { id } = ctx.user;
+    await userService.updatePassword(newPwd, id);
+    ctx.body = {
+      status: 100,
+      message: "success",
+      data: null,
+    };
+  }
 }
 
 module.exports = new AuthController();

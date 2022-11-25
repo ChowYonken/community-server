@@ -12,6 +12,17 @@ class UserService {
     await connections.execute(statement1, [insertId, 2]);
     return result;
   }
+  // 根据id查看用户密码
+  async getPwdById(id) {
+    const statement = `
+      SELECT
+      password
+      FROM user
+      WHERE id = ?;
+    `;
+    const [result] = await connections.execute(statement, [id]);
+    return result[0];
+  }
   // 根据用户账号判断用户是否已注册
   async getUserByAccount(account) {
     const statement = `SELECT * FROM user WHERE account = ?;`;
@@ -29,6 +40,13 @@ class UserService {
     const statement = `SELECT * FROM user WHERE address = ?;`;
     const [result] = await connections.execute(statement, [address]);
     return result.length === 0 ? false : true;
+  }
+  // 修改密码
+  async updatePassword(newPwd, id) {
+    const statement = `
+    UPDATE user SET password = ? WHERE id = ?;
+    `;
+    await connections.execute(statement, [newPwd, id]);
   }
   // 管理员或用户添加或修改个人信息
   async updateInfo(userInfo, userId) {
