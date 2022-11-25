@@ -29,6 +29,6 @@ authRouter.get("/login/user", verifyAuth, getUserInfoById);
 // 用户退出登录
 authRouter.get("/logout", verifyAuth, logout);
 // 修改密码
-authRouter.patch("/updatePwd", verifyAuth, verifyOldPwd, updatePassword);
+authRouter.post("/updatePwd", verifyAuth, verifyOldPwd, updatePassword);
 
 module.exports = authRouter;
