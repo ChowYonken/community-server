@@ -50,6 +50,15 @@ class UserController {
       data: result,
     };
   }
+  // 获取用户总数
+  async getUserTotal(ctx, next) {
+    const result = await userService.getUserTotal();
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
   // 管理员根据真实姓名或地址查询用户
   async queryByRealnameOrAddress(ctx, next) {
     const { offset, limit } = ctx.request.body;
@@ -111,6 +120,15 @@ class UserController {
   async suspectedList(ctx, next) {
     const { offset, limit } = ctx.request.body;
     const result = await userService.suspectedList(offset, limit);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 查看疑似人员总数
+  async getSuspectedTotal(ctx, next) {
+    const result = await userService.getSuspectedTotal();
     ctx.body = {
       status: 200,
       message: "success",

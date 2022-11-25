@@ -57,6 +57,15 @@ class AdminController {
       data: result,
     };
   }
+  // 查看外出人员总数
+  async getOutTotal(ctx, next) {
+    const result = await adminService.getOutTotal();
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
   // 根据住户真实姓名查询外出报备
   async getOutByRealname(ctx, next) {
     const { realname } = ctx.request.body;
@@ -138,6 +147,15 @@ class AdminController {
   async getHealthList(ctx, next) {
     const { offset, limit } = ctx.request.body;
     const result = await adminService.getHealthList(offset, limit);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 获取住户健康信息总数
+  async getHealthTotal(ctx, next) {
+    const result = await adminService.getHealthTotal();
     ctx.body = {
       status: 200,
       message: "success",

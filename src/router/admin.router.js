@@ -6,6 +6,7 @@ const {
   deleteNotice,
   getNoticeById,
   getOutList,
+  getOutTotal,
   getOutByRealname,
   getOutByEnd,
   getOutByTime,
@@ -13,6 +14,7 @@ const {
   getOutById,
   deleteById,
   getHealthList,
+  getHealthTotal,
   getHealthById,
   getHealthByHomeTemp,
   getHealthByHealthCode,
@@ -53,6 +55,8 @@ adminRouter.get(
 );
 // 查询所有外出人员
 adminRouter.post("/manage/out/list", verifyAuth, verifyPermission, getOutList);
+// 查询外出人员总数
+adminRouter.get("/manage/out/total", verifyAuth, getOutTotal);
 // 根据住户真实姓名查询外出报备
 adminRouter.post(
   "/manage/out/realname",
@@ -92,6 +96,8 @@ adminRouter.post(
   verifyPermission,
   getHealthList
 );
+// 获取住户健康信息总数
+adminRouter.get("/manage/health/total", verifyAuth, getHealthTotal);
 // 查询指定id住户的健康信息
 adminRouter.get(
   "/manage/health/:userId",

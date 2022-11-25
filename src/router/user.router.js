@@ -4,6 +4,7 @@ const {
   updateInfo,
   getUserInfoById,
   getUserList,
+  getUserTotal,
   deleteInfo,
   addUser,
   isSuspected,
@@ -12,6 +13,7 @@ const {
   getNoticeByPriority,
   addOut,
   addHealth,
+  getSuspectedTotal,
 } = require("../controller/user.controller");
 
 const {
@@ -45,6 +47,8 @@ userRouter.post("/health", verifyAuth, addHealth);
 
 // 管理员获取用户列表
 userRouter.post("/list", verifyAuth, verifyPermission, getUserList);
+// 获取用户总数
+userRouter.get("/total", verifyAuth, getUserTotal);
 // 管理员获取某个用户信息
 userRouter.get("/:userId", verifyAuth, verifyPermission, getUserInfoById);
 // 管理员根据真实名字或地址查询用户
@@ -64,5 +68,7 @@ userRouter.delete("/:userId", verifyAuth, verifyPermission, deleteInfo);
 userRouter.put("/:userId", verifyAuth, verifyPermission, isSuspected);
 // 管理员查询所有疑似人员
 userRouter.post("/suspected", verifyAuth, verifyPermission, suspectedList);
+// 查看疑似人员总数
+userRouter.get("/suspected/total", verifyAuth, getSuspectedTotal);
 
 module.exports = userRouter;

@@ -53,8 +53,21 @@ class AdminService {
       LEFT JOIN user u ON u.id = o.user_id
       LIMIT ?, ?;
     `;
-    const [result] = await connections.execute(statement, [offset, limit]);
+    const [result] = await connections.execute(statement, [
+      (offset - 1) * limit,
+      limit,
+    ]);
     return result;
+  }
+  // 查看外出人员总数
+  async getOutTotal() {
+    const statement = `
+      SELECT
+      COUNT(*) as total
+      FROM outward;
+    `;
+    const [result] = await connections.execute(statement);
+    return result[0];
   }
   // 根据住户真实姓名查询外出报备
   async getOutByRealname(realname) {
@@ -79,10 +92,14 @@ class AdminService {
       o.start, o.end, o.startTime, o.endTime, o.transportation, o.createAt, o.updateAt
       FROM outward o
       LEFT JOIN user u ON u.id = o.user_id
-      WHERE o.end = ?
+      WHERE o.end LIKE ?
       LIMIT ?, ?;
     `;
-    const [result] = await connections.execute(statement, [end, offset, limit]);
+    const [result] = await connections.execute(statement, [
+      `%${end}%`,
+      (offset - 1) * limit,
+      limit,
+    ]);
     return result;
   }
   // 根据时间段查询外出报备
@@ -100,7 +117,7 @@ class AdminService {
     const [result] = await connections.execute(statement, [
       startTime,
       endTime,
-      offset,
+      (offset - 1) * limit,
       limit,
     ]);
     return result;
@@ -156,8 +173,21 @@ class AdminService {
       LEFT JOIN user u ON u.id = h.user_id
       LIMIT ?, ?;
     `;
-    const [result] = await connections.execute(statement, [offset, limit]);
+    const [result] = await connections.execute(statement, [
+      (offset - 1) * limit,
+      limit,
+    ]);
     return result;
+  }
+  // 获取住户健康信息总数
+  async getHealthTotal() {
+    const statement = `
+      SELECT
+      COUNT(*) as total
+      FROM health;
+    `;
+    const [result] = await connections.execute(statement);
+    return result[0];
   }
   // 查询指定id住户的健康信息
   async getHealthById(userId) {
@@ -187,7 +217,7 @@ class AdminService {
     `;
     const [result] = await connections.execute(statement, [
       homeTemp,
-      offset,
+      (offset - 1) * limit,
       limit,
     ]);
     return result;
@@ -206,7 +236,7 @@ class AdminService {
     `;
     const [result] = await connections.execute(statement, [
       healthCode,
-      offset,
+      (offset - 1) * limit,
       limit,
     ]);
     return result;
@@ -226,7 +256,7 @@ class AdminService {
     const [result] = await connections.execute(statement, [
       startTime,
       endTime,
-      offset,
+      (offset - 1) * limit,
       limit,
     ]);
     return result;

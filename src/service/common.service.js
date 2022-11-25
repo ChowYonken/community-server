@@ -26,7 +26,10 @@ class CommonService {
       FROM notice
       LIMIT ?, ?;
     `;
-    const [result] = await connections.execute(statement, [offset, limit]);
+    const [result] = await connections.execute(statement, [
+      (offset - 1) * limit,
+      limit,
+    ]);
     return result;
   }
   // 查询最新公告

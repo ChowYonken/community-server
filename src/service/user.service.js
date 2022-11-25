@@ -65,8 +65,21 @@ class UserService {
                        LEFT JOIN user_role ur ON ur.user_id = u.id
                        LEFT JOIN role r ON r.id = ur.role_id
                        LIMIT ?, ?;`;
-    const [result] = await connections.execute(statement, [offset, limit]);
+    const [result] = await connections.execute(statement, [
+      (offset - 1) * limit,
+      limit,
+    ]);
     return result;
+  }
+  // 获取用户总数
+  async getUserTotal() {
+    const statement = `
+      SELECT
+      COUNT(*) as total
+      FROM user;
+    `;
+    const [result] = await connections.execute(statement);
+    return result[0];
   }
   // 管理员根据真实姓名或地址查询用户
   async queryByRealnameOrAddress(realname, address, offset, limit) {
@@ -80,7 +93,7 @@ class UserService {
     const [result] = await connections.execute(statement, [
       `%${realname}%`,
       `%${address}%`,
-      offset,
+      (offset - 1) * limit,
       limit,
     ]);
     return result;
@@ -117,8 +130,22 @@ class UserService {
       FROM user 
       WHERE suspected = 1
       LIMIT ?, ?;`;
-    const [result] = await connections.execute(statement, [offset, limit]);
+    const [result] = await connections.execute(statement, [
+      (offset - 1) * limit,
+      limit,
+    ]);
     return result;
+  }
+  // 查看疑似人员总数
+  async getSuspectedTotal() {
+    const statement = `
+      SELECT
+      COUNT(*) as total
+      FROM user
+      WHERE suspected = 1;
+    `;
+    const [result] = await connections.execute(statement);
+    return result[0];
   }
   // 用户查询普通或紧急公告
   async getNoticeByPriority(offset, limit, priority, timeStart, timeEnd) {
@@ -136,7 +163,7 @@ class UserService {
         timeStart,
         timeEnd,
         priority,
-        offset,
+        (offset - 1) * limit,
         limit,
       ]);
     } else if (priority && timeStart === "") {
