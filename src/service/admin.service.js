@@ -60,13 +60,45 @@ class AdminService {
     return result;
   }
   // 查看外出人员总数
-  async getOutTotal() {
-    const statement = `
+  async getOutTotal(end, startTime, endTime) {
+    let statement = ``;
+    let result = [];
+    if (!end && !startTime) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM outward;
+      `;
+      [result] = await connections.execute(statement);
+    } else if (end && startTime) {
+      statement = `
       SELECT
       COUNT(*) as total
-      FROM outward;
-    `;
-    const [result] = await connections.execute(statement);
+      FROM outward
+      WHERE end LIKE ? AND (endTime >= ? AND endTime <= ?);
+      `;
+      [result] = await connections.execute(statement, [
+        `%${end}%`,
+        startTime,
+        endTime,
+      ]);
+    } else if (end && !startTime) {
+      statement = `
+      SELECT
+      COUNT(*) as total
+      FROM outward
+      WHERE end LIKE ?;
+      `;
+      [result] = await connections.execute(statement, [`%${end}%`]);
+    } else if (!end && startTime) {
+      statement = `
+      SELECT
+      COUNT(*) as total
+      FROM outward
+      WHERE endTime >= ? AND endTime <= ?;
+      `;
+      [result] = await connections.execute(statement, [startTime, endTime]);
+    }
     return result[0];
   }
   // 根据住户真实姓名查询外出报备
@@ -83,44 +115,80 @@ class AdminService {
     const [result] = await connections.execute(statement, [realname]);
     return result;
   }
-  // 根据指定结束地点的外出报备
-  async getOutByEnd(end, offset, limit) {
-    const statement = `
-      SELECT
-      o.id,
-      JSON_OBJECT('id', u.id, 'realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
-      o.start, o.end, o.startTime, o.endTime, o.transportation, o.createAt, o.updateAt
-      FROM outward o
-      LEFT JOIN user u ON u.id = o.user_id
-      WHERE o.end LIKE ?
-      LIMIT ?, ?;
-    `;
-    const [result] = await connections.execute(statement, [
-      `%${end}%`,
-      (offset - 1) * limit,
-      limit,
-    ]);
-    return result;
-  }
-  // 根据时间段查询外出报备
-  async getOutByTime(startTime, endTime, offset, limit) {
-    const statement = `
-      SELECT
-      o.id,
-      JSON_OBJECT('id', u.id, 'realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
-      o.start, o.end, o.startTime, o.endTime, o.transportation, o.createAt, o.updateAt
-      FROM outward o
-      LEFT JOIN user u ON u.id = o.user_id
-      WHERE o.endTime >= ? AND o.endTime <= ?
-      LIMIT ?, ?;
-    `;
-    const [result] = await connections.execute(statement, [
-      startTime,
-      endTime,
-      (offset - 1) * limit,
-      limit,
-    ]);
-    return result;
+  // 根据指定结束地点或时间段的外出报备
+  async getOutByEndOrTime(offset, limit, end, startTime, endTimes) {
+    let statement = ``;
+    let result = [];
+    if (!end && !startTime) {
+      statement = `
+        SELECT
+        o.id,
+        JSON_OBJECT('id', u.id, 'realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+        o.start, o.end, o.startTime, o.endTime, o.transportation, o.createAt, o.updateAt
+        FROM outward o
+        LEFT JOIN user u ON u.id = o.user_id
+        LIMIT ?, ?;
+      `;
+      const [result] = await connections.execute(statement, [
+        (offset - 1) * limit,
+        limit,
+      ]);
+      return result;
+    } else if (end && startTime) {
+      statement = `
+        SELECT
+        o.id,
+        JSON_OBJECT('id', u.id, 'realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+        o.start, o.end, o.startTime, o.endTime, o.transportation, o.createAt, o.updateAt
+        FROM outward o
+        LEFT JOIN user u ON u.id = o.user_id
+        WHERE o.end LIKE ? AND (o.endTime >= ? AND o.endTime <= ?)
+        LIMIT ?, ?;
+      `;
+      const [result] = await connections.execute(statement, [
+        `%${end}%`,
+        startTime,
+        endTimes,
+        (offset - 1) * limit,
+        limit,
+      ]);
+      return result;
+    } else if (end && !startTime) {
+      statement = `
+        SELECT
+        o.id,
+        JSON_OBJECT('id', u.id, 'realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+        o.start, o.end, o.startTime, o.endTime, o.transportation, o.createAt, o.updateAt
+        FROM outward o
+        LEFT JOIN user u ON u.id = o.user_id
+        WHERE o.end LIKE ?
+        LIMIT ?, ?;
+      `;
+      const [result] = await connections.execute(statement, [
+        `%${end}%`,
+        (offset - 1) * limit,
+        limit,
+      ]);
+      return result;
+    } else if (!end && startTime) {
+      statement = `
+        SELECT
+        o.id,
+        JSON_OBJECT('id', u.id, 'realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+        o.start, o.end, o.startTime, o.endTime, o.transportation, o.createAt, o.updateAt
+        FROM outward o
+        LEFT JOIN user u ON u.id = o.user_id
+        WHERE o.endTime >= ? AND o.endTime <= ?
+        LIMIT ?, ?;
+      `;
+      const [result] = await connections.execute(statement, [
+        startTime,
+        endTimes,
+        (offset - 1) * limit,
+        limit,
+      ]);
+      return result;
+    }
   }
   // 修改某条外出报备
   async updateOutById(
@@ -180,13 +248,41 @@ class AdminService {
     return result;
   }
   // 获取住户健康信息总数
-  async getHealthTotal() {
-    const statement = `
-      SELECT
-      COUNT(*) as total
-      FROM health;
-    `;
-    const [result] = await connections.execute(statement);
+  async getHealthTotal(homeTemp, healthCode, startTime, endTime) {
+    let statement = ``;
+    let result = [];
+    if (!homeTemp && !healthCode && !startTime) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM health;
+      `;
+      [result] = await connections.execute(statement);
+    } else if (homeTemp && !healthCode && !startTime) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM health
+        WHERE homeTemp >= ?;
+      `;
+      [result] = await connections.execute(statement, [homeTemp]);
+    } else if (!homeTemp && healthCode && !startTime) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM health
+        WHERE healthCode = ?;
+      `;
+      [result] = await connections.execute(statement, [healthCode]);
+    } else if (!homeTemp && !healthCode && startTime) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM health
+        WHERE createAt >= ? AND createAt <= ?;
+      `;
+      [result] = await connections.execute(statement, [startTime, endTime]);
+    }
     return result[0];
   }
   // 查询指定id住户的健康信息

@@ -50,8 +50,12 @@ class commonController {
   }
   // 获取公告总数
   async getNoticeTotal(ctx, next) {
-    const result = await commonService.getNoticeTotal();
-    console.log(result);
+    const { priority, timeStart, timeEnd } = ctx.request.body;
+    const result = await commonService.getNoticeTotal(
+      priority,
+      timeStart,
+      timeEnd
+    );
     ctx.body = {
       status: 200,
       message: "success",

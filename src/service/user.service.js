@@ -90,13 +90,44 @@ class UserService {
     return result;
   }
   // 获取用户总数
-  async getUserTotal() {
-    const statement = `
-      SELECT
-      COUNT(*) as total
-      FROM user;
-    `;
-    const [result] = await connections.execute(statement);
+  async getUserTotal(realname, address) {
+    let statement = ``;
+    let result = [];
+    if (!realname && !address) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM user;
+      `;
+      [result] = await connections.execute(statement);
+    } else if (realname && address) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM user
+        WHERE realname LIKE ? AND address LIKE ?;
+      `;
+      [result] = await connections.execute(statement, [
+        `%${realname}%`,
+        `%${address}%`,
+      ]);
+    } else if (realname && !address) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM user
+        WHERE realname LIKE ?;
+      `;
+      [result] = await connections.execute(statement, [`%${realname}%`]);
+    } else if (!realname && address) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM user
+        WHERE address LIKE ?;
+      `;
+      [result] = await connections.execute(statement, [`%${address}%`]);
+    }
     return result[0];
   }
   // 管理员根据真实姓名或地址查询用户
@@ -194,7 +225,7 @@ class UserService {
       `;
       [result] = await connections.execute(statement, [
         priority,
-        offset,
+        (offset - 1) * limit,
         limit,
       ]);
     } else if (priority === "" && timeStart) {
@@ -208,7 +239,7 @@ class UserService {
       [result] = await connections.execute(statement, [
         timeStart,
         timeEnd,
-        offset,
+        (offset - 1) * limit,
         limit,
       ]);
     }

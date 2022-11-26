@@ -31,6 +31,10 @@ const errorHandler = (error, ctx) => {
       status = 400;
       message = "地址已重复~";
       break;
+    case errorTypes.SEARCH_ERROR:
+      status = 400;
+      message = "搜索条件有误~";
+      break;
     default:
       status = 404;
       message = "NOT FOUND";

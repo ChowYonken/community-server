@@ -59,7 +59,8 @@ class AdminController {
   }
   // 查看外出人员总数
   async getOutTotal(ctx, next) {
-    const result = await adminService.getOutTotal();
+    const { end, startTime, endTime } = ctx.request.body;
+    const result = await adminService.getOutTotal(end, startTime, endTime);
     ctx.body = {
       status: 200,
       message: "success",
@@ -76,26 +77,15 @@ class AdminController {
       data: result,
     };
   }
-  // 根据指定结束地点的外出报备
-  async getOutByEnd(ctx, next) {
-    const { offset, limit } = ctx.request.body;
-    const { end } = ctx.request.body;
-    const result = await adminService.getOutByEnd(end, offset, limit);
-    ctx.body = {
-      status: 200,
-      message: "success",
-      data: result,
-    };
-  }
-  // 根据时间段查询外出报备
-  async getOutByTime(ctx, next) {
-    const { offset, limit } = ctx.request.body;
-    const { startTime, endTime } = ctx.request.body;
-    const result = await adminService.getOutByTime(
-      startTime,
-      endTime,
+  // 根据指定结束地点或时间段的外出报备
+  async getOutByEndOrTime(ctx, next) {
+    const { offset, limit, end, startTime, endTime } = ctx.request.body;
+    const result = await adminService.getOutByEndOrTime(
       offset,
-      limit
+      limit,
+      end,
+      startTime,
+      endTime
     );
     ctx.body = {
       status: 200,
@@ -155,7 +145,13 @@ class AdminController {
   }
   // 获取住户健康信息总数
   async getHealthTotal(ctx, next) {
-    const result = await adminService.getHealthTotal();
+    const { homeTemp, healthCode, startTime, endTime } = ctx.request.body;
+    const result = await adminService.getHealthTotal(
+      homeTemp,
+      healthCode,
+      startTime,
+      endTime
+    );
     ctx.body = {
       status: 200,
       message: "success",

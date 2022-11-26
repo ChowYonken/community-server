@@ -5,6 +5,7 @@ const PASSWORD_IS_INCORRENT = "password_is_incorrent";
 const UNAUTHORIZATION = "UNAUTHORIZATION";
 const UNPERMISSION = "unpermission";
 const ADDRESS_ALREADY_EXISTS = "address_already_exists";
+const SEARCH_ERROR = "search_error";
 
 module.exports = {
   NAME_OR_PASSWORD_IS_REQUIRED,
@@ -14,4 +15,5 @@ module.exports = {
   UNAUTHORIZATION,
   UNPERMISSION,
   ADDRESS_ALREADY_EXISTS,
+  SEARCH_ERROR,
 };

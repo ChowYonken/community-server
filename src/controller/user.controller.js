@@ -52,7 +52,8 @@ class UserController {
   }
   // 获取用户总数
   async getUserTotal(ctx, next) {
-    const result = await userService.getUserTotal();
+    const { realname, address } = ctx.request.body;
+    const result = await userService.getUserTotal(realname, address);
     ctx.body = {
       status: 200,
       message: "success",

@@ -55,13 +55,41 @@ class CommonService {
     return result;
   }
   // 获取公告总数
-  async getNoticeTotal() {
-    const statement = `
-      SELECT
-      COUNT(*) as total
-      FROM notice;
-    `;
-    const [result] = await connections.execute(statement);
+  async getNoticeTotal(priority, timeStart, timeEnd) {
+    let statement = ``;
+    let result = [];
+    if (!priority && !timeStart) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM notice;
+      `;
+      [result] = await connections.execute(statement);
+    } else if (priority && timeStart && timeEnd) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM notice
+        WHERE priority = ? AND (createAt >= ? AND createAt <= ?);
+      `;
+      [result] = await connections.execute(statement, [
+        priority,
+        timeStart,
+        timeEnd,
+      ]);
+    } else if (priority || timeStart) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM notice
+        WHERE priority = ? OR (createAt >= ? AND createAt <= ?);
+      `;
+      [result] = await connections.execute(statement, [
+        priority,
+        timeStart,
+        timeEnd,
+      ]);
+    }
     return result[0];
   }
 }
