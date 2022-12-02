@@ -61,7 +61,7 @@ userRouter.post(
 // 管理员添加用户
 userRouter.post("/", verifyAuth, verifyPermission, addUser);
 // 管理员修改用户信息
-userRouter.patch("/:userId", verifyAuth, verifyPermission, updateInfo);
+userRouter.post("/:userId", verifyAuth, verifyPermission, updateInfo);
 // 管理员删除用户
 userRouter.delete("/:userId", verifyAuth, verifyPermission, deleteInfo);
 // 管理员设疑似人员

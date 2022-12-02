@@ -71,7 +71,7 @@ adminRouter.post(
   getOutByEndOrTime
 );
 // 修改某条外出报备
-adminRouter.patch(
+adminRouter.post(
   "/manage/out/:outId",
   verifyAuth,
   verifyPermission,
@@ -124,7 +124,7 @@ adminRouter.post(
   getHealthByTime
 );
 // 修改某条健康信息
-adminRouter.patch(
+adminRouter.post(
   "/manage/health/:healthId",
   verifyAuth,
   verifyPermission,
