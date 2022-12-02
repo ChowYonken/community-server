@@ -158,6 +158,10 @@ class UserService {
       cellphone,
       address,
     ]);
+    // 默认分配为住户
+    const { insertId } = result;
+    const statement1 = `INSERT INTO user_role (user_id, role_id) VALUES (?, ?);`;
+    await connections.execute(statement1, [insertId, 2]);
     return result;
   }
   // 管理员删除用户
