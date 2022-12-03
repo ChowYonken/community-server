@@ -134,8 +134,12 @@ class UserService {
   async queryByRealnameOrAddress(realname, address, offset, limit) {
     const statement = `
       SELECT
-      *
-      FROM user
+      u.id, u.account, u.realname, u.cellphone, u.address, u.suspected, 
+      JSON_OBJECT("id", r.id, "name", r.name, "createTime", r.createAt, "updateTime", r.updateAt) role,
+      u.createAt createTime, u.updateAt updateTime
+      FROM user u
+      LEFT JOIN user_role ur ON ur.user_id = u.id
+      LEFT JOIN role r ON r.id = ur.role_id
       WHERE realname LIKE ? AND address LIKE ?
       LIMIT ?, ?;
     `;
