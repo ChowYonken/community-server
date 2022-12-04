@@ -183,7 +183,7 @@ class UserService {
   // 管理员查询疑似人员列表
   async suspectedList(offset, limit) {
     const statement = `
-      SELECT account, realname, cellphone, address, suspected 
+      SELECT id, account, realname, cellphone, address, suspected 
       FROM user 
       WHERE suspected = 1
       LIMIT ?, ?;`;
