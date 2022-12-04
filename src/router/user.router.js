@@ -67,7 +67,7 @@ userRouter.delete("/:userId", verifyAuth, verifyPermission, deleteInfo);
 // 管理员设疑似人员
 userRouter.put("/:userId", verifyAuth, verifyPermission, isSuspected);
 // 管理员查询所有疑似人员
-userRouter.post("/suspected", verifyAuth, verifyPermission, suspectedList);
+userRouter.post("/suspected/list", verifyAuth, verifyPermission, suspectedList);
 // 查看疑似人员总数
 userRouter.get("/suspected/total", verifyAuth, getSuspectedTotal);
 
