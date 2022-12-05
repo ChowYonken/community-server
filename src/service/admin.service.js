@@ -60,7 +60,7 @@ class AdminService {
     return result;
   }
   // 查看外出人员总数
-  async getOutTotal(end, startTime, endTime) {
+  async getOutTotal(realname, end, startTime, endTime) {
     let statement = ``;
     let result = [];
     if (!end && !startTime) {
@@ -98,6 +98,16 @@ class AdminService {
       WHERE endTime >= ? AND endTime <= ?;
       `;
       [result] = await connections.execute(statement, [startTime, endTime]);
+    }
+    if (realname && !end && !startTime) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM outward o
+        LEFT JOIN user u ON u.id = o.user_id
+        WHERE u.realname = ?;
+      `;
+      [result] = await connections.execute(statement, [realname]);
     }
     return result[0];
   }

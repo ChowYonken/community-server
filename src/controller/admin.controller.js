@@ -59,8 +59,13 @@ class AdminController {
   }
   // 查看外出人员总数
   async getOutTotal(ctx, next) {
-    const { end, startTime, endTime } = ctx.request.body;
-    const result = await adminService.getOutTotal(end, startTime, endTime);
+    const { realname, end, startTime, endTime } = ctx.request.body;
+    const result = await adminService.getOutTotal(
+      realname,
+      end,
+      startTime,
+      endTime
+    );
     ctx.body = {
       status: 200,
       message: "success",
