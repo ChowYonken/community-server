@@ -397,6 +397,121 @@ class AdminService {
     const [result] = await connections.execute(statement, [healthId]);
     return result;
   }
+  // 查询所有设备列表
+  async getDeviceList(offset, limit) {
+    const statement = `
+      SELECT 
+      * 
+      FROM device
+      LIMIT ?, ?;
+    `;
+    const [result] = await connections.execute(statement, [offset, limit]);
+    return result;
+  }
+  // 根据设备名字或好坏程度查询
+  async getDeviceByNameOrstatus(offset, limit, name, status) {
+    let statement = ``;
+    let result = [];
+    if (name && !status) {
+      statement = `
+        SELECT
+        *
+        FROM device
+        WHERE name LIKE ?
+        LIMIT ?, ?;
+      `;
+      [result] = await connections.execute(statement, [
+        `%${name}%`,
+        offset,
+        limit,
+      ]);
+    } else if (!name && status) {
+      statement = `
+        SELECT
+        *
+        FROM device
+        WHERE status = ?
+        LIMIT ?, ?;
+      `;
+      [result] = await connections.execute(statement, [status, offset, limit]);
+    }
+    return result;
+  }
+  // 查询设备总数
+  async getDeviceTotal(name, status) {
+    let statement = ``;
+    let result = [];
+    if (!name && !status) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM device;
+      `;
+      [result] = await connections.execute(statement);
+    } else if (name && !status) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM device
+        WHERE name LIKE ?
+      `;
+      [result] = await connections.execute(statement, [`%${name}%`]);
+    } else if (!name && status) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM device
+        WHERE status = ?
+      `;
+      [result] = await connections.execute(statement, [status]);
+    }
+    return result[0];
+  }
+  // 根据用户真实姓名查询用户id
+  async getIdByRealname(realname) {
+    const statement = `
+      SELECT
+      id
+      FROM user
+      WHERE realname = ?;
+    `;
+    const [result] = await connections.execute(statement, [realname]);
+    return result[0];
+  }
+  // 添加设备
+  async addDevice(name, status, others, id) {
+    const statement = `
+      INSERT INTO device (name, status, others, user_id) VALUES (?, ?, ?, ?);
+    `;
+    const [result] = await connections.execute(statement, [
+      name,
+      status,
+      others,
+      id,
+    ]);
+    return result;
+  }
+  // 修改设备
+  async updateDevice(name, status, others, deviceId) {
+    const statement = `
+      UPDATE device SET name=?, status=?, others=? WHERE id = ?;
+    `;
+    const [result] = await connections.execute(statement, [
+      name,
+      status,
+      others,
+      deviceId,
+    ]);
+    return result;
+  }
+  // 删除设备
+  async deleteDevice(deviceId) {
+    const statement = `
+      DELETE FROM device WHERE id=?;
+    `;
+    const [result] = await connections.execute(statement, [deviceId]);
+    return result;
+  }
 }
 
 module.exports = new AdminService();

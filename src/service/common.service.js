@@ -92,6 +92,17 @@ class CommonService {
     }
     return result[0];
   }
+  // 查询设备好坏情况
+  async getDeviceCounts() {
+    const statement = `
+      SELECT 
+      status, COUNT(*) counts 
+      FROM device 
+      GROUP BY status;
+    `;
+    const [result] = await connections.execute(statement);
+    return result;
+  }
 }
 
 module.exports = new CommonService();

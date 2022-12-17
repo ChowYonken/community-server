@@ -20,6 +20,12 @@ const {
   getHealthByTime,
   updateHealth,
   deleteHealth,
+  getDeviceList,
+  getDeviceByNameOrstatus,
+  getDeviceTotal,
+  addDevice,
+  updateDevice,
+  deleteDevice,
 } = require("../controller/admin.controller");
 
 const {
@@ -136,6 +142,43 @@ adminRouter.delete(
   verifyAuth,
   verifyPermission,
   deleteHealth
+);
+// 查询设备列表
+adminRouter.post(
+  "/manage/device/list",
+  verifyAuth,
+  verifyPermission,
+  getDeviceList
+);
+// 根据设备名字或好坏程度查询
+adminRouter.post(
+  "/manage/device/query",
+  verifyAuth,
+  verifyPermission,
+  getDeviceByNameOrstatus
+);
+// 查询设备总数
+adminRouter.post(
+  "/manage/device/total",
+  verifyAuth,
+  verifyPermission,
+  getDeviceTotal
+);
+// 添加设备
+adminRouter.post("/manage/device", verifyAuth, verifyPermission, addDevice);
+// 修改设备
+adminRouter.post(
+  "/manage/device/:deviceId",
+  verifyAuth,
+  verifyPermission,
+  updateDevice
+);
+// 删除设备
+adminRouter.delete(
+  "/manage/device/:deviceId",
+  verifyAuth,
+  verifyPermission,
+  deleteDevice
 );
 
 module.exports = adminRouter;

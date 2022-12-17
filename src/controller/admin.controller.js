@@ -245,6 +245,78 @@ class AdminController {
       data: result,
     };
   }
+  // 查询所有设备列表
+  async getDeviceList(ctx, next) {
+    const { offset, limit } = ctx.request.body;
+    const result = await adminService.getDeviceList(offset, limit);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 根据设备名字或好坏程度查询
+  async getDeviceByNameOrstatus(ctx, next) {
+    const { offset, limit, name, status } = ctx.request.body;
+    const result = await adminService.getDeviceByNameOrstatus(
+      offset,
+      limit,
+      name,
+      status
+    );
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 查询设备总数
+  async getDeviceTotal(ctx, next) {
+    const { name, status } = ctx.request.body;
+    const result = await adminService.getDeviceTotal(name, status);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 添加设备
+  async addDevice(ctx, next) {
+    const { name, status, others, realname } = ctx.request.body;
+    const { id } = await adminService.getIdByRealname(realname);
+    const result = await adminService.addDevice(name, status, others, id);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 修改设备
+  async updateDevice(ctx, next) {
+    const { name, status, others } = ctx.request.body;
+    const { deviceId } = ctx.request.params;
+    const result = await adminService.updateDevice(
+      name,
+      status,
+      others,
+      deviceId
+    );
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 删除设备
+  async deleteDevice(ctx, next) {
+    const { deviceId } = ctx.request.params;
+    const result = await adminService.deleteDevice(deviceId);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
 }
 
 module.exports = new AdminController();

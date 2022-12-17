@@ -62,6 +62,15 @@ class commonController {
       data: result,
     };
   }
+  // 查询设备好坏情况
+  async getDeviceCounts(ctx, next) {
+    const result = await commonService.getDeviceCounts();
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
 }
 
 module.exports = new commonController();
