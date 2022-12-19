@@ -401,8 +401,10 @@ class AdminService {
   async getDeviceList(offset, limit) {
     const statement = `
       SELECT 
-      * 
-      FROM device
+      d.id, d.name, d.status, d.others, d.createAt,
+      JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo
+      FROM device d
+      LEFT JOIN user u ON u.id = d.user_id
       LIMIT ?, ?;
     `;
     const [result] = await connections.execute(statement, [
@@ -418,8 +420,10 @@ class AdminService {
     if (name && !status) {
       statement = `
         SELECT
-        *
-        FROM device
+        d.id, d.name, d.status, d.others, d.createAt,
+        JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo
+        FROM device d
+        LEFT JOIN user u ON u.id = d.user_id
         WHERE name LIKE ?
         LIMIT ?, ?;
       `;
@@ -431,8 +435,10 @@ class AdminService {
     } else if (!name && status) {
       statement = `
         SELECT
-        *
-        FROM device
+        d.id, d.name, d.status, d.others, d.createAt,
+        JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo
+        FROM device d
+        LEFT JOIN user u ON u.id = d.user_id
         WHERE status = ?
         LIMIT ?, ?;
       `;
