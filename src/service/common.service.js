@@ -103,6 +103,31 @@ class CommonService {
     const [result] = await connections.execute(statement);
     return result;
   }
+  // 获取体温范围数量
+  async getTempCounts() {
+    const statement = `
+      SELECT CASE
+        WHEN outTemp > 0 and outTemp <= 37.2 THEN
+          '37.2及以下'
+        WHEN outTemp > 37.2 and outTemp <= 37.9 THEN
+          '37.3~37.9'
+        WHEN outTemp > 37.9 THEN
+          '38.0以上'
+        END title,
+      COUNT(id) total
+      FROM temp
+      GROUP BY CASE
+        WHEN outTemp > 0 and outTemp <= 37.2 THEN
+          '37.2及以下'
+        WHEN outTemp > 37.2 and outTemp <= 37.9 THEN
+          '37.3~37.9'
+        WHEN outTemp > 37.9 THEN
+          '38.0以上'
+        END;
+    `;
+    const [result] = await connections.execute(statement);
+    return result;
+  }
 }
 
 module.exports = new CommonService();

@@ -8,6 +8,7 @@ const {
   getNewNotice,
   getNoticeTotal,
   getDeviceCounts,
+  getTempCounts,
 } = require("../controller/common.controller");
 
 const { verifyAuth } = require("../middleware/auth.middleware");
@@ -28,5 +29,7 @@ commonRouter.get("/main/healthCode/counts", verifyAuth, gethealthCodeCounts);
 commonRouter.post("/main/notice/total", verifyAuth, getNoticeTotal);
 // 查询设备好坏情况
 commonRouter.get("/main/device/counts", verifyAuth, getDeviceCounts);
+// 获取体温范围数量
+commonRouter.get("/main/temp/counts", verifyAuth, getTempCounts);
 
 module.exports = commonRouter;

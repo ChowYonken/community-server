@@ -71,6 +71,15 @@ class commonController {
       data: result,
     };
   }
+  // 获取体温范围数量
+  async getTempCounts(ctx, next) {
+    const result = await commonService.getTempCounts();
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
 }
 
 module.exports = new commonController();
