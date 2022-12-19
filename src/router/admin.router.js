@@ -27,6 +27,8 @@ const {
   updateDevice,
   deleteDevice,
   getTempList,
+  getTempByoverOrStatus,
+  getTempTotal,
 } = require("../controller/admin.controller");
 
 const {
@@ -187,6 +189,20 @@ adminRouter.post(
   verifyAuth,
   verifyPermission,
   getTempList
+);
+// 根据温度或状态查询外出温度
+adminRouter.post(
+  "/manage/temp/query",
+  verifyAuth,
+  verifyPermission,
+  getTempByoverOrStatus
+);
+// 查询外出温度总数
+adminRouter.post(
+  "/manage/temp/total",
+  verifyAuth,
+  verifyPermission,
+  getTempTotal
 );
 
 module.exports = adminRouter;

@@ -537,8 +537,108 @@ class AdminService {
       LEFT JOIN user u ON u.id = t.user_id
       LIMIT ?, ?;
     `;
-    const [result] = await connections.execute(statement, [offset, limit]);
+    const [result] = await connections.execute(statement, [
+      (offset - 1) * limit,
+      limit,
+    ]);
     return result;
+  }
+  // 根据温度或状态查询外出温度
+  async getTempByoverOrStatus(offset, limit, outTemp, status) {
+    let statement = ``;
+    let result = [];
+    if (outTemp && status) {
+      statement = `
+        SELECT
+        t.id, t.outTemp, t.status, t.createAt,
+        JSON_OBJECT('id', d.id, 'name', d.name) deviceInfo,
+        JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo
+        FROM temp t
+        LEFT JOIN device d ON d.id = t.device_id
+        LEFT JOIN user u ON u.id = t.user_id
+        WHERE t.outTemp >= ? AND t.status = ?
+        LIMIT ?, ?;
+      `;
+      [result] = await connections.execute(statement, [
+        outTemp,
+        status,
+        (offset - 1) * limit,
+        limit,
+      ]);
+    } else if (outTemp && !status) {
+      statement = `
+        SELECT
+        t.id, t.outTemp, t.status, t.createAt,
+        JSON_OBJECT('id', d.id, 'name', d.name) deviceInfo,
+        JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo
+        FROM temp t
+        LEFT JOIN device d ON d.id = t.device_id
+        LEFT JOIN user u ON u.id = t.user_id
+        WHERE t.outTemp >= ?
+        LIMIT ?, ?;
+      `;
+      [result] = await connections.execute(statement, [
+        outTemp,
+        (offset - 1) * limit,
+        limit,
+      ]);
+    } else if (!outTemp && status) {
+      statement = `
+        SELECT
+        t.id, t.outTemp, t.status, t.createAt,
+        JSON_OBJECT('id', d.id, 'name', d.name) deviceInfo,
+        JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo
+        FROM temp t
+        LEFT JOIN device d ON d.id = t.device_id
+        LEFT JOIN user u ON u.id = t.user_id
+        WHERE t.status = ?
+        LIMIT ?, ?;
+      `;
+      [result] = await connections.execute(statement, [
+        status,
+        (offset - 1) * limit,
+        limit,
+      ]);
+    }
+    return result;
+  }
+  // 查询外出温度总数
+  async getTempTotal(outTemp, status) {
+    let statement = ``;
+    let result = [];
+    if (outTemp && status) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM temp
+        WHERE outTemp >= ? AND status = ?;
+      `;
+      [result] = await connections.execute(statement, [outTemp, status]);
+    } else if (outTemp && !status) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM temp
+        WHERE outTemp >= ?;
+      `;
+      [result] = await connections.execute(statement, [outTemp]);
+    } else if (!outTemp && status) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM temp
+        WHERE status = ?;
+      `;
+      [result] = await connections.execute(statement, [status]);
+    } else if (!outTemp && !status) {
+      statement = `
+        SELECT
+        COUNT(*) as total
+        FROM temp;
+      `;
+      [result] = await connections.execute(statement);
+    }
+    return result[0];
   }
 }
 

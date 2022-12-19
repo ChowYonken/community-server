@@ -327,6 +327,31 @@ class AdminController {
       data: result,
     };
   }
+  // 根据温度或状态查询外出温度
+  async getTempByoverOrStatus(ctx, next) {
+    const { offset, limit, outTemp, status } = ctx.request.body;
+    const result = await adminService.getTempByoverOrStatus(
+      offset,
+      limit,
+      outTemp,
+      status
+    );
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
+  // 查询外出温度总数
+  async getTempTotal(ctx, next) {
+    const { outTemp, status } = ctx.request.body;
+    const result = await adminService.getTempTotal(outTemp, status);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
 }
 
 module.exports = new AdminController();
