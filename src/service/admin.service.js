@@ -405,7 +405,10 @@ class AdminService {
       FROM device
       LIMIT ?, ?;
     `;
-    const [result] = await connections.execute(statement, [offset, limit]);
+    const [result] = await connections.execute(statement, [
+      (offset - 1) * limit,
+      limit,
+    ]);
     return result;
   }
   // 根据设备名字或好坏程度查询
@@ -422,7 +425,7 @@ class AdminService {
       `;
       [result] = await connections.execute(statement, [
         `%${name}%`,
-        offset,
+        (offset - 1) * limit,
         limit,
       ]);
     } else if (!name && status) {
@@ -433,7 +436,11 @@ class AdminService {
         WHERE status = ?
         LIMIT ?, ?;
       `;
-      [result] = await connections.execute(statement, [status, offset, limit]);
+      [result] = await connections.execute(statement, [
+        status,
+        (offset - 1) * limit,
+        limit,
+      ]);
     }
     return result;
   }
@@ -510,6 +517,21 @@ class AdminService {
       DELETE FROM device WHERE id=?;
     `;
     const [result] = await connections.execute(statement, [deviceId]);
+    return result;
+  }
+  // 获取所有温度
+  async getTempList(offset, limit) {
+    const statement = `
+      SELECT
+      t.id, t.outTemp, t.status, t.createAt,
+      JSON_OBJECT('id', d.id, 'name', d.name) deviceInfo,
+      JSON_OBJECT('realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo
+      FROM temp t
+      LEFT JOIN device d ON d.id = t.device_id
+      LEFT JOIN user u ON u.id = t.user_id
+      LIMIT ?, ?;
+    `;
+    const [result] = await connections.execute(statement, [offset, limit]);
     return result;
   }
 }

@@ -317,6 +317,16 @@ class AdminController {
       data: result,
     };
   }
+  // 获取所有温度
+  async getTempList(ctx, next) {
+    const { offset, limit } = ctx.request.body;
+    const result = await adminService.getTempList(offset, limit);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
 }
 
 module.exports = new AdminController();

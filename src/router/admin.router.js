@@ -26,6 +26,7 @@ const {
   addDevice,
   updateDevice,
   deleteDevice,
+  getTempList,
 } = require("../controller/admin.controller");
 
 const {
@@ -179,6 +180,13 @@ adminRouter.delete(
   verifyAuth,
   verifyPermission,
   deleteDevice
+);
+// 获取所有温度
+adminRouter.post(
+  "/manage/temp/list",
+  verifyAuth,
+  verifyPermission,
+  getTempList
 );
 
 module.exports = adminRouter;
