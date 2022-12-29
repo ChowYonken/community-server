@@ -29,6 +29,7 @@ const {
   getTempList,
   getTempByoverOrStatus,
   getTempTotal,
+  getEmergent,
 } = require("../controller/admin.controller");
 
 const {
@@ -206,3 +207,11 @@ adminRouter.post(
 );
 
 module.exports = adminRouter;
+
+// 输入高风险地区查找外出人员
+adminRouter.post(
+  "/manage/emergent/riskplace",
+  verifyAuth,
+  verifyPermission,
+  getEmergent
+);

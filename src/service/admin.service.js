@@ -640,6 +640,25 @@ class AdminService {
     }
     return result[0];
   }
+  // 输入高风险地区查找外出人员
+  async getEmergent(riskplace, offset, limit) {
+    const statement = `
+      SELECT
+      o.id,
+      JSON_OBJECT('id', u.id, 'realname', u.realname, 'cellphone', u.cellphone, 'address', u.address) userInfo,
+      o.start, o.end, o.startTime, o.endTime, o.transportation, o.createAt, o.updateAt
+      FROM outward o
+      LEFT JOIN user u ON u.id = o.user_id
+      WHERE o.end LIKE ?
+      LIMIT ?, ?;
+    `;
+    const [result] = await connections.execute(statement, [
+      `%${riskplace}%`,
+      (offset - 1) * limit,
+      limit,
+    ]);
+    return result;
+  }
 }
 
 module.exports = new AdminService();

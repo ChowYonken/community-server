@@ -352,6 +352,16 @@ class AdminController {
       data: result,
     };
   }
+  // 输入高风险地区查找外出人员
+  async getEmergent(ctx, next) {
+    const { riskplace, offset, limit } = ctx.request.body;
+    const result = await adminService.getEmergent(riskplace, offset, limit);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
 }
 
 module.exports = new AdminController();
