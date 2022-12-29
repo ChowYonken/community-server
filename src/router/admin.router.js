@@ -30,6 +30,7 @@ const {
   getTempByoverOrStatus,
   getTempTotal,
   getEmergent,
+  getRiskplaceTotal,
 } = require("../controller/admin.controller");
 
 const {
@@ -214,4 +215,11 @@ adminRouter.post(
   verifyAuth,
   verifyPermission,
   getEmergent
+);
+
+adminRouter.post(
+  "/manage/emergent/riskplace/total",
+  verifyAuth,
+  verifyPermission,
+  getRiskplaceTotal
 );

@@ -659,6 +659,16 @@ class AdminService {
     ]);
     return result;
   }
+  async getRiskplaceTotal(riskplace) {
+    const statement = `
+      SELECT
+      COUNT(*) as total
+      FROM outward
+      WHERE end LIKE ?;
+    `;
+    const [result] = await connections.execute(statement, [`%${riskplace}%`]);
+    return result;
+  }
 }
 
 module.exports = new AdminService();

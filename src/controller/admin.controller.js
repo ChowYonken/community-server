@@ -362,6 +362,15 @@ class AdminController {
       data: result,
     };
   }
+  async getRiskplaceTotal(ctx, next) {
+    const { riskplace } = ctx.request.body;
+    const result = await adminService.getRiskplaceTotal(riskplace);
+    ctx.body = {
+      status: 200,
+      message: "success",
+      data: result,
+    };
+  }
 }
 
 module.exports = new AdminController();
